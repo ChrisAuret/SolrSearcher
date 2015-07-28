@@ -1,0 +1,66 @@
+# Seaching with Solr using Requirejs, Backbone, Express, Foundation and Typeahead
+
+Download and install Java
+https://java.com/en/download/
+
+Download and extract Solr
+http://www.apache.org/dyn/closer.cgi/lucene/solr/5.2.1
+C:\solr-5.2.1
+
+Download and extract Microsoft JDBC Drivers
+http://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=11774
+Create 'lib' directory in 'contrib/dataimporthandler'
+Copy file 'sqljdbc4.jar' to 'contrib/dataimporthandler/lib'
+
+Create a new Solr Collection
+bin/solr create -c <name>
+/solr/venue/conf
+/solr/venue/data
+
+Edit solrconfig.xml. Add:
+<lib dir="${solr.install.dir:../../../..}/contrib/dataimporthandler/lib" regex=".*\.jar" />
+<lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-dataimporthandler-.*\.jar" />
+
+Ensure /dist folder contains:
+solr-dataimporthandler-5.2.1.jar
+solr-dataimporthandler-extras-5.2.1.jar
+
+Add DIH request handler to solrconfig.xml
+<requestHandler name="/dataimport" class="org.apache.solr.handler.dataimport.DataImportHandler">
+    <lst name="defaults">
+    <str name="config">data-config.xml</str>
+    </lst>
+</requestHandler>
+
+Edit data-config.xml
+<dataConfig>
+  <dataSource type="JdbcDataSource" 
+              driver="com.microsoft.sqlserver.jdbc.SQLServerDriver" 
+              url="jdbc:sqlserver://127.0.0.1\LOCAL;Database=ConveyancingDirectory;Username=solr;Password=solr"/>   
+              />
+  <document>
+    <entity name="product"  
+      pk="id"
+      query="select id,name from products"
+      deltaImportQuery="SELECT id,name from products WHERE id='${dih.delta.id}'"
+      deltaQuery="SELECT id FROM products  WHERE updated_at > '${dih.last_index_time}'">
+       <field column="id" name="id"/>
+       <field column="name" name="name"/>       
+    </entity>
+  </document>
+</dataConfig>
+
+Edit scheme.xml
+<schema name="example" version="1.5">
+    <field name="_version_" type="long" indexed="true" stored="true"/>
+    <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" /> 
+    <field name="name" type="text_general" indexed="true" stored="true"/>
+    ...
+
+After successfully adding a collection to Solr you can select it and run dataimport commands:
+full-import - use URL: http://localhost:8983/solr/myproducts/dataimport?command=full-import
+delta-import - use URL: http://localhost:8983/solr/myproducts/dataimport?command=delta-import
+
+References
+http://wiki.apache.org/solr/DIHQuickStart
+http://wiki.apache.org/solr/DataImportHandler

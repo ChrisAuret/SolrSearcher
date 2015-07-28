@@ -1,0 +1,16 @@
+<a href="#" data-reveal-id="venue-search-modal">Find a venue</a>
+
+<div id="venue-search-modal" class="reveal-modal" data-reveal aria-labelledby="Venue search" aria-hidden="true" role="dialog">
+	<h2 id="modalTitle">Venue lookup</h2>
+	<p class="lead">Find the venue that you want the booking to take place at</p>
+	<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+	<form action="/search" method="get">
+	  <div class="row">
+	    <div class="large-12 columns">
+	      <label>Venue name
+	        <input class="venue-search" type="text" placeholder="Venue name" />
+	      </label>
+	    </div>
+	  </div>
+	</form>
+</div>

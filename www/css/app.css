@@ -1,0 +1,26 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:500,700);
+
+
+body {
+  color: #435757;
+  background: linear-gradient(-20deg, #d0b782 20%, #a0cecf 80%);
+  font: 500 1.2em/1.2 'Roboto', sans-serif;
+}
+
+#container {
+  margin-top: 50px;
+  border-top: 5px solid #435757;
+  padding: 50px;
+  background-color: rgba(255, 255, 255, .2);
+  box-shadow: 0 0 20px rgba(0, 0, 0, .5);
+}
+
+/*  h1 {
+  margin: 0;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, .4);
+  font-size: 1.8em;
+  text-align: center;
+}*/
+
+.typeahead { z-index: 1051; }
